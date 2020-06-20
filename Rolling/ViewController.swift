@@ -16,7 +16,6 @@ class ViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         setupNavBar()
-        print("what are you doing")
     }
     
     func setupNavBar() {
