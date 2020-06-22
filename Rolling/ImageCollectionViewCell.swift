@@ -8,6 +8,16 @@
 
 import UIKit
 
+protocol ImageCellDelegate: class {
+    func delete(cell: ImageCollectionViewCell)
+}
+
 class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
+    
+    weak var delegate: ImageCellDelegate?
+    
+    @IBAction func deleteButton(_ sender: Any) {
+        delegate?.delete(cell: self)
+    }
 }

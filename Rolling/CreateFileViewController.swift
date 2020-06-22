@@ -13,24 +13,24 @@ class CreateFileViewController: UIViewController {
     
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var label: UILabel!
-    @IBOutlet weak var collectionView: UICollectionView! {
+    @IBOutlet weak var imageCollectionView: UICollectionView! {
         didSet {
-            collectionView.layer.borderColor = UIColor.opaqueSeparator.cgColor
-            collectionView.layer.borderWidth = 1
+            imageCollectionView.layer.borderColor = UIColor.opaqueSeparator.cgColor
+            imageCollectionView.layer.borderWidth = 1
         }
     }
     
-    @objc func didTapCell(sender: UITapGestureRecognizer) {
+    @IBAction func tapAction(_ sender: Any) {
         let imagePickerController = UIImagePickerController()
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let cell = collectionView.layoutAttributesForItem(at: [0,imageList.count])
-        
+        let cell = imageCollectionView.cellForItem(at: [0,imageList.count])
+
         actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { _ in
             self.openCamera(imagePicker: imagePickerController, sourceType: .camera) }))
         actionSheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { _ in
             self.presentImagePicker(controller: imagePickerController, source: .photoLibrary) }))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        actionSheet.popoverPresentationController?.sourceView = self.collectionView;
+        actionSheet.popoverPresentationController?.sourceView = cell;
         actionSheet.popoverPresentationController?.sourceRect = CGRect(x: cell?.bounds.midX ?? 0, y: cell?.bounds.midY ?? 0, width: 0, height: 0)
         self.present(actionSheet, animated: true, completion: nil)
     }
@@ -58,8 +58,8 @@ class CreateFileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        imageCollectionView.delegate = self
+        imageCollectionView.dataSource = self
         textField.delegate = self
         textField.clearButtonMode = .always
         textField.clearButtonMode = .whileEditing
@@ -86,11 +86,11 @@ extension CreateFileViewController: UICollectionViewDelegate, UICollectionViewDa
             if (indexPath.item == 0) {
                 cell.frame.origin.x = 5
             }
-            cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapCell)))
             return cell
         } else {
-            let cell: ImageCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "imageCell", for: indexPath) as! ImageCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "imageCell", for: indexPath) as! ImageCollectionViewCell
             cell.imageView.image = imageList[indexPath.row]
+            cell.delegate = self
             return cell
         }
     }
@@ -100,12 +100,22 @@ extension CreateFileViewController: UIImagePickerControllerDelegate & UINavigati
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             imageList.append(image)
-            collectionView.reloadData()
+            let insertIndexPath = IndexPath(item: imageList.count-1, section: 0)
+            imageCollectionView.insertItems(at: [insertIndexPath])
         }
         picker.dismiss(animated: true, completion: nil)
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension CreateFileViewController: ImageCellDelegate {
+    func delete(cell: ImageCollectionViewCell) {
+        if let indexPath = imageCollectionView?.indexPath(for: cell) {
+            imageList.remove(at: indexPath.item)
+            imageCollectionView?.deleteItems(at: [indexPath])
+        }
     }
 }
