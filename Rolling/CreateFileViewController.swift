@@ -11,6 +11,7 @@ import UIKit
 class CreateFileViewController: UIViewController {
     var imageList = [UIImage]()
     
+    @IBOutlet weak var textFieldHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var imageCollectionView: UICollectionView! {
@@ -21,25 +22,31 @@ class CreateFileViewController: UIViewController {
     }
     
     @objc func tapEdit() {
-        let constX:NSLayoutConstraint = NSLayoutConstraint(item: imageCollectionView!, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: 1, constant: 0)
-        textField.isHidden = false
-        label.isHidden = false
-        view.removeConstraint(constX)
-        imageCollectionView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 8).isActive = true
+        UIView.animate(withDuration: 0.3, animations: {
+            self.textFieldHeightConstraint.constant = 40
+            self.view.layoutIfNeeded()
+        }) { _ in
+            self.label.isHidden = false
+        }
+        
         imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(tapSave))
     }
     
     @objc func tapSave() {
         self.title = textField.text
-        textField.isHidden = true
-        label.isHidden = true
-//        button.isHidden = true
-        imageCollectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            self.textFieldHeightConstraint.constant = 0
+            self.view.layoutIfNeeded()
+        }) { _ in
+            self.label.isHidden = true
+            self.textField.resignFirstResponder()
+        }
+        
         imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
-//        checkName()
-        //save in modal
+        //TODO: save in modal
     }
     
     @IBAction func tapAction(_ sender: Any) {

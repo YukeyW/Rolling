@@ -229,6 +229,7 @@
                         <outlet property="imageCollectionView" destination="mlu-xv-A3Q" id="sDd-BZ-R0L"/>
                         <outlet property="label" destination="FyU-k5-Bro" id="dQb-Zv-LRC"/>
                         <outlet property="textField" destination="zqL-Yd-y7T" id="50Y-sO-xza"/>
+                        <outlet property="textFieldHeightConstraint" destination="k55-rE-EwW" id="2kA-dT-RxM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U4B-Pc-9oA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
