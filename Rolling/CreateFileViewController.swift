@@ -20,6 +20,28 @@ class CreateFileViewController: UIViewController {
         }
     }
     
+    @objc func tapEdit() {
+        let constX:NSLayoutConstraint = NSLayoutConstraint(item: imageCollectionView!, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: 1, constant: 0)
+        textField.isHidden = false
+        label.isHidden = false
+        view.removeConstraint(constX)
+        imageCollectionView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 8).isActive = true
+        imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = false
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(tapSave))
+    }
+    
+    @objc func tapSave() {
+        self.title = textField.text
+        textField.isHidden = true
+        label.isHidden = true
+//        button.isHidden = true
+        imageCollectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
+//        checkName()
+        //save in modal
+    }
+    
     @IBAction func tapAction(_ sender: Any) {
         let imagePickerController = UIImagePickerController()
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -102,6 +124,9 @@ extension CreateFileViewController: UIImagePickerControllerDelegate & UINavigati
             imageList.append(image)
             let insertIndexPath = IndexPath(item: imageList.count-1, section: 0)
             imageCollectionView.insertItems(at: [insertIndexPath])
+            if navigationItem.rightBarButtonItem == nil && imageList.count != 0 {
+                navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(tapSave))
+            }
         }
         picker.dismiss(animated: true, completion: nil)
     }
@@ -116,6 +141,11 @@ extension CreateFileViewController: ImageCellDelegate {
         if let indexPath = imageCollectionView?.indexPath(for: cell) {
             imageList.remove(at: indexPath.item)
             imageCollectionView?.deleteItems(at: [indexPath])
+            if imageList.count == 0 {
+                navigationItem.rightBarButtonItem = nil
+                let cell = imageCollectionView.cellForItem(at: [0,0])
+                cell?.frame.origin.x = 5
+            }
         }
     }
 }

@@ -108,6 +108,9 @@
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Please enter" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zqL-Yd-y7T">
                                 <rect key="frame" x="77" y="58" width="939" height="39.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="39.5" id="k55-rE-EwW"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -200,6 +203,7 @@
                                         <viewLayoutGuide key="safeArea" id="ixc-Aj-hhx"/>
                                         <size key="customSize" width="141" height="182"/>
                                         <connections>
+                                            <outlet property="button" destination="oiJ-OR-Dbi" id="coN-Rn-IHx"/>
                                             <outlet property="imageView" destination="ONi-SW-cEv" id="rOt-h7-SHR"/>
                                         </connections>
                                     </collectionViewCell>
@@ -224,7 +228,7 @@
                     <connections>
                         <outlet property="imageCollectionView" destination="mlu-xv-A3Q" id="sDd-BZ-R0L"/>
                         <outlet property="label" destination="FyU-k5-Bro" id="dQb-Zv-LRC"/>
-                        <outlet property="textField" destination="zqL-Yd-y7T" id="Jcx-7t-IlG"/>
+                        <outlet property="textField" destination="zqL-Yd-y7T" id="50Y-sO-xza"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U4B-Pc-9oA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -234,7 +238,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1531.640625" y="-954.02635431917997"/>
+            <point key="canvasLocation" x="1710" y="-994"/>
         </scene>
         <!--Search-->
         <scene sceneID="K7R-7I-hXF">

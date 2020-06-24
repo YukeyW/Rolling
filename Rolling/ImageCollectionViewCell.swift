@@ -14,6 +14,7 @@ protocol ImageCellDelegate: class {
 
 class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var button: UIButton!
     
     weak var delegate: ImageCellDelegate?
     

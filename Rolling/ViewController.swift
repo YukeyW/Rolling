@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
-    
+//    let model = DataLoader().model
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.delegate = self
@@ -36,3 +36,4 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         return cell
     }
 }
+
