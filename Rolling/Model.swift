@@ -9,15 +9,34 @@
 import Foundation
 import UIKit
 
-struct Model {
+struct Model: Codable {
     let name: String
-    let image: [UIImage]
-    let date: Date
+    let image: [Image]
+    let date: String
     
-    init(name: String, image: [UIImage], date: Date) {
+    init(name: String, image: [Image], date: String) {
         self.name = name
         self.image = image
         self.date = date
     }
 }
+
+struct Image: Codable{
+    let imageData: Data?
+    
+    init(withImage image: UIImage) {
+        self.imageData = image.pngData()
+    }
+
+    func getImage() -> UIImage? {
+        guard let imageData = self.imageData else {
+            return nil
+        }
+        let image = UIImage(data: imageData)
+        
+        return image
+    }
+}
+
+
 

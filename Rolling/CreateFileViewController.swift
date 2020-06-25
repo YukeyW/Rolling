@@ -8,12 +8,17 @@
 
 import UIKit
 
+protocol CreateFileViewControllerDelegate: class {
+    func saveToModel(textName: String, imageList: [UIImage])
+}
+
 class CreateFileViewController: UIViewController {
     var imageList = [UIImage]()
-    
+
     @IBOutlet weak var textFieldHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var label: UILabel!
+    weak var imageDelegate: CreateFileViewControllerDelegate?
     @IBOutlet weak var imageCollectionView: UICollectionView! {
         didSet {
             imageCollectionView.layer.borderColor = UIColor.opaqueSeparator.cgColor
@@ -27,8 +32,12 @@ class CreateFileViewController: UIViewController {
             self.view.layoutIfNeeded()
         }) { _ in
             self.label.isHidden = false
+            for index in [0, self.imageList.count-1] {
+                let cell = self.imageCollectionView.cellForItem(at: [0,index]) as! ImageCollectionViewCell
+                cell.button.isHidden = false
+            }
         }
-        
+
         imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(tapSave))
     }
@@ -44,8 +53,16 @@ class CreateFileViewController: UIViewController {
             self.textField.resignFirstResponder()
         }
         
+        for index in [0, self.imageList.count-1] {
+            let cell = self.imageCollectionView.cellForItem(at: [0,index]) as! ImageCollectionViewCell
+            cell.button.isHidden = true
+        }
+        
         imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
+        imageDelegate?.saveToModel(textName: textField.text!, imageList: imageList)
+        print("--------"+"\(String(describing: textField.text))"+"\(imageList)")
+        //TODO:  check name validate
         //TODO: save in modal
     }
     
