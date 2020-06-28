@@ -9,37 +9,46 @@
 import Foundation
 import UIKit
 
-public class DataLoader {
-//    var model = [Model]()
+class DataLoader {
+    var model = [Model]()
     
-//    init() {
-//        load()
-//    }
-//
-//    func load() {
-//        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-//
-//        do {
-//            let fileUrls = try FileManager.default.contentsOfDirectory(at: path!, includingPropertiesForKeys: nil)
-//            let data = try Data(contentsOf: fileUrls[0])
-//            let jsonDecoder = JSONDecoder()
-//            let dataFromJson = try jsonDecoder.decode([Model].self, from: data)
-//            self.model = dataFromJson
-//            } catch {
-//                print(error)
-//        }
-//    }
-//    
-//    func json(from object:Any) -> String? {
-//        guard let data = try? JSONSerialization.data(withJSONObject: object, options: []) else {
-//            return nil
-//        }
-//        return String(data: data, encoding: String.Encoding.utf8)
-//    }
+    init() {
+        self.load()
+    }
     
+    func load() {
+        let manager = FileManager.default
+        guard let libraryDirectoryUrl = manager.urls(for: .libraryDirectory, in: .userDomainMask).first else { return }
+        let folder = libraryDirectoryUrl.appendingPathComponent("/RollingApp", isDirectory: true)
+        let exist = manager.fileExists(atPath: folder.path)
+        if !exist {
+            try! manager.createDirectory(at: folder, withIntermediateDirectories: true,
+                                         attributes: nil)
+            model = []
+        } else {
+            do {
+                let path = folder.path + "/music.json"
+                let newUrl = URL.init(string: "file://" + path)!
+                let data = try Data(contentsOf: newUrl)
+                let dataFromJson = try JSONDecoder().decode([Model].self, from: data)
+                model = dataFromJson
+                print("\(model)")
+            } catch {
+                print(error)
+            }
+        }
+    }
+
     func save(model: [Model], imageArray: [UIImage]) {
-        guard let documentsDirectoryUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-        let fileUrl = documentsDirectoryUrl.appendingPathComponent("music.json")
+        let manager = FileManager.default
+        guard let libraryDirectoryUrl = manager.urls(for: .libraryDirectory, in: .userDomainMask).first else { return }
+        let folder = libraryDirectoryUrl.appendingPathComponent("/RollingApp", isDirectory: true)
+        let exist = manager.fileExists(atPath: folder.path)
+        if !exist {
+            try! manager.createDirectory(at: folder, withIntermediateDirectories: true,
+                                         attributes: nil)
+        }
+        let fileUrl = folder.appendingPathComponent("music.json")
         print("\(fileUrl)")
         do {
             let jsonData = try JSONEncoder().encode(model)
@@ -49,18 +58,16 @@ public class DataLoader {
         }
 
         for arrayItem in model {
-            let DocumentDirectory = NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
-            let DirPath = DocumentDirectory.appendingPathComponent("\(arrayItem.name)")
+            let path = folder.path + "/" + "\(arrayItem.name)"
             do{
-                try FileManager.default.createDirectory(atPath: DirPath!.path, withIntermediateDirectories: true, attributes: nil)
+                try manager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print(error)
             }
-            print("\(String(describing: DirPath))")
 
             for (index, image) in imageArray.enumerated() {
                 let imageData = image.pngData()
-                let newPath = DirPath?.appendingPathComponent("picture" + "\(index)" + ".png")
+                let newPath = URL.init(string: "file://" + path)?.appendingPathComponent("picture" + "\(index)" + ".png")
                 try? imageData?.write(to: newPath!)
             }
         }

@@ -10,9 +10,9 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
-//    var model = DataLoader().model
+    
     let dataLoader = DataLoader()
-    var newModel = [Model]()
+    lazy var newModel = dataLoader.model
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,24 +29,6 @@ class ViewController: UIViewController {
         }
     }
     
-    func setupNavBar() {
-        navigationController?.navigationBar.prefersLargeTitles = true
-    }
-}
-
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "documentCell", for: indexPath)
-        if (indexPath.item == 0) {
-            cell.frame.origin.x = 5
-        }
-        return cell
-    }
-    
     func convertDateToString() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -55,6 +37,31 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         formatter.dateFormat = "dd-MMM-yyyy"
         let myStringafd = formatter.string(from: yourDate!)
         return myStringafd
+    }
+    
+    func setupNavBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+}
+
+extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return newModel.count + 1
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.row == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addDocumentCell", for: indexPath)
+            if (indexPath.item == 0) {
+                cell.frame.origin.x = 5
+            }
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "documentCell", for: indexPath) as! DocumentCollectionViewCell
+            cell.documentName.text = newModel[indexPath.row - 1].name
+            cell.date.text = newModel[indexPath.row - 1].date
+            return cell
+        }
     }
 }
 

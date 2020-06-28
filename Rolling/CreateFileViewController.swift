@@ -14,11 +14,12 @@ protocol CreateFileViewControllerDelegate: class {
 
 class CreateFileViewController: UIViewController {
     var imageList = [UIImage]()
-
+    weak var imageDelegate: CreateFileViewControllerDelegate?
+    
     @IBOutlet weak var textFieldHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var label: UILabel!
-    weak var imageDelegate: CreateFileViewControllerDelegate?
+    
     @IBOutlet weak var imageCollectionView: UICollectionView! {
         didSet {
             imageCollectionView.layer.borderColor = UIColor.opaqueSeparator.cgColor
@@ -31,14 +32,8 @@ class CreateFileViewController: UIViewController {
             self.textFieldHeightConstraint.constant = 40
             self.view.layoutIfNeeded()
         }) { _ in
-            self.label.isHidden = false
-            for index in [0, self.imageList.count-1] {
-                let cell = self.imageCollectionView.cellForItem(at: [0,index]) as! ImageCollectionViewCell
-                cell.button.isHidden = false
-            }
+            self.isShowed(hide: false)
         }
-
-        imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(tapSave))
     }
     
@@ -49,21 +44,13 @@ class CreateFileViewController: UIViewController {
             self.textFieldHeightConstraint.constant = 0
             self.view.layoutIfNeeded()
         }) { _ in
-            self.label.isHidden = true
+            self.isShowed(hide: true)
             self.textField.resignFirstResponder()
         }
-        
-        for index in [0, self.imageList.count-1] {
-            let cell = self.imageCollectionView.cellForItem(at: [0,index]) as! ImageCollectionViewCell
-            cell.button.isHidden = true
-        }
-        
-        imageCollectionView.cellForItem(at: [0,imageList.count])?.isHidden = true
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
         imageDelegate?.saveToModel(textName: textField.text!, imageList: imageList)
-        print("--------"+"\(String(describing: textField.text))"+"\(imageList)")
         //TODO:  check name validate
-        //TODO: save in modal
     }
     
     @IBAction func tapAction(_ sender: Any) {
@@ -83,6 +70,15 @@ class CreateFileViewController: UIViewController {
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    func isShowed(hide: Bool) {
+        label.isHidden = hide
+        imageCollectionView.cellForItem(at: [0, imageList.count])?.isHidden = hide
+        for (index, _) in imageList.enumerated() {
+            let cell = imageCollectionView.cellForItem(at: [0, index]) as! ImageCollectionViewCell
+            cell.button.isHidden = hide
+        }
     }
 
     func openCamera(imagePicker: UIImagePickerController, sourceType: UIImagePickerController.SourceType) {
