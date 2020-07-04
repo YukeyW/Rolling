@@ -11,15 +11,15 @@ import UIKit
 
 class DataLoader {
     var model = [Model]()
+    let manager = FileManager.default
     
     init() {
         self.load()
     }
     
     func load() {
-        let manager = FileManager.default
         guard let libraryDirectoryUrl = manager.urls(for: .libraryDirectory, in: .userDomainMask).first else { return }
-        let folder = libraryDirectoryUrl.appendingPathComponent("/RollingApp", isDirectory: true)
+        let folder = libraryDirectoryUrl.appendingPathComponent("RollingApp", isDirectory: true)
         let exist = manager.fileExists(atPath: folder.path)
         if !exist {
             try! manager.createDirectory(at: folder, withIntermediateDirectories: true,
@@ -32,15 +32,33 @@ class DataLoader {
                 let data = try Data(contentsOf: newUrl)
                 let dataFromJson = try JSONDecoder().decode([Model].self, from: data)
                 model = dataFromJson
+                print(path)
                 print("\(model)")
             } catch {
                 print(error)
             }
         }
     }
+    
+    func removeFile(newModel: [Model], index: Int, name:String) {
+        guard let libraryDirectoryUrl = manager.urls(for: .libraryDirectory, in: .userDomainMask).first else { return }
+        let filePath = libraryDirectoryUrl.path + "/RollingApp" + "/" + "\(name)"
+        print(filePath)
+        if manager.fileExists(atPath: filePath) {
+            try! manager.removeItem(atPath: filePath)
+        }
+        let fileUrl = URL.init(string: "file://" + libraryDirectoryUrl.path + "/RollingApp/music.json" )!
+        model = newModel
+        model.remove(at: index)
+        do {
+            let jsonData = try JSONEncoder().encode(model)
+            try jsonData.write(to: fileUrl, options: [])
+        } catch {
+            print(error)
+        }
+    }
 
     func save(model: [Model], imageArray: [UIImage]) {
-        let manager = FileManager.default
         guard let libraryDirectoryUrl = manager.urls(for: .libraryDirectory, in: .userDomainMask).first else { return }
         let folder = libraryDirectoryUrl.appendingPathComponent("/RollingApp", isDirectory: true)
         let exist = manager.fileExists(atPath: folder.path)

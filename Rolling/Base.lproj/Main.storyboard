@@ -72,9 +72,6 @@
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="128" height="180"/>
-                                        <connections>
-                                            <segue destination="Yi4-en-C2r" kind="show" identifier="addFile" id="LkB-gO-Luy"/>
-                                        </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="documentCell" id="41q-sG-jri" customClass="DocumentCollectionViewCell" customModule="Rolling" customModuleProvider="target">
                                         <rect key="frame" x="149.5" y="0.0" width="128" height="180"/>
@@ -143,6 +140,7 @@
                     <navigationItem key="navigationItem" title="Documents" id="Lf5-r2-5T2"/>
                     <connections>
                         <outlet property="collectionView" destination="j7T-nF-5UQ" id="zCq-8U-deb"/>
+                        <segue destination="Yi4-en-C2r" kind="show" identifier="viewController" id="Rqu-D6-rnS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -152,7 +150,7 @@
         <!--Create Music Source-->
         <scene sceneID="Bzb-hF-Jv5">
             <objects>
-                <viewController id="Yi4-en-C2r" customClass="CreateFileViewController" customModule="Rolling" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CreateFileViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Yi4-en-C2r" customClass="CreateFileViewController" customModule="Rolling" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FHa-ki-R1x">
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -175,7 +173,7 @@
                                 <rect key="frame" x="0.0" y="105.5" width="1024" height="1195.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="aEi-LV-gr2">
-                                    <size key="itemSize" width="120" height="180"/>
+                                    <size key="itemSize" width="120" height="190"/>
                                     <size key="estimatedItemSize" width="155" height="150"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -183,10 +181,10 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="509-og-xkp">
-                                        <rect key="frame" x="0.0" y="1" width="120" height="180"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="120" height="190"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="1uL-fE-Acs">
-                                            <rect key="frame" x="0.0" y="0.0" width="120" height="180"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="120" height="190"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus.app" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="NYY-Zl-Yy2">
@@ -211,13 +209,13 @@
                                                 <constraint firstItem="NYY-Zl-Yy2" firstAttribute="centerX" secondItem="1uL-fE-Acs" secondAttribute="centerX" id="zVY-26-5Q0"/>
                                             </constraints>
                                         </collectionViewCellContentView>
-                                        <size key="customSize" width="120" height="180"/>
+                                        <size key="customSize" width="120" height="190"/>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="mIU-Yq-mhW" appends="YES" id="M56-iK-cLJ"/>
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="imageCell" id="7JC-IC-KKm" customClass="ImageCollectionViewCell" customModule="Rolling" customModuleProvider="target">
-                                        <rect key="frame" x="130" y="0.0" width="141" height="182"/>
+                                        <rect key="frame" x="130" y="4" width="141" height="182"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="FCt-Hh-0sC">
                                             <rect key="frame" x="0.0" y="0.0" width="141" height="182"/>
@@ -261,6 +259,14 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ora-Yg-2EM">
+                                <rect key="frame" x="0.0" y="1259" width="1024" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Preview"/>
+                                <connections>
+                                    <action selector="clickButton:" destination="Yi4-en-C2r" eventType="touchUpInside" id="K0i-kk-0aW"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -270,9 +276,12 @@
                             <constraint firstItem="zqL-Yd-y7T" firstAttribute="leading" secondItem="FyU-k5-Bro" secondAttribute="trailing" constant="5" id="KB0-Mz-Pu6"/>
                             <constraint firstItem="ni6-r8-tzQ" firstAttribute="trailing" secondItem="zqL-Yd-y7T" secondAttribute="trailing" constant="8" id="OAM-de-Bd3"/>
                             <constraint firstItem="FyU-k5-Bro" firstAttribute="top" secondItem="FHa-ki-R1x" secondAttribute="topMargin" constant="13" id="RPu-XI-iaN"/>
+                            <constraint firstItem="ni6-r8-tzQ" firstAttribute="trailing" secondItem="Ora-Yg-2EM" secondAttribute="trailing" id="UDk-sp-sGH"/>
                             <constraint firstItem="ni6-r8-tzQ" firstAttribute="trailing" secondItem="mlu-xv-A3Q" secondAttribute="trailing" id="X9d-SR-tjd"/>
+                            <constraint firstItem="Ora-Yg-2EM" firstAttribute="leading" secondItem="ni6-r8-tzQ" secondAttribute="leading" id="ch6-qc-aaf"/>
                             <constraint firstItem="zqL-Yd-y7T" firstAttribute="top" secondItem="ni6-r8-tzQ" secondAttribute="top" constant="8" id="fSc-Mu-zQp"/>
                             <constraint firstItem="FyU-k5-Bro" firstAttribute="leading" secondItem="ni6-r8-tzQ" secondAttribute="leading" constant="8" id="mKo-Xw-KJ9"/>
+                            <constraint firstItem="ni6-r8-tzQ" firstAttribute="bottom" secondItem="Ora-Yg-2EM" secondAttribute="bottom" id="rp3-IZ-Vvf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ni6-r8-tzQ"/>
                     </view>
@@ -282,6 +291,7 @@
                         <outlet property="label" destination="FyU-k5-Bro" id="dQb-Zv-LRC"/>
                         <outlet property="textField" destination="zqL-Yd-y7T" id="50Y-sO-xza"/>
                         <outlet property="textFieldHeightConstraint" destination="ywp-6I-Q8T" id="fpV-JV-FKP"/>
+                        <segue destination="WVX-lw-iDm" kind="show" identifier="ScrollPageViewController" id="3Km-TG-aND"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U4B-Pc-9oA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -292,6 +302,37 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1709.765625" y="-994.43631039531476"/>
+        </scene>
+        <!--Scroll Page View Controller-->
+        <scene sceneID="JDj-Lj-4iD">
+            <objects>
+                <viewController storyboardIdentifier="ScrollPageViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WVX-lw-iDm" customClass="ScrollPageViewController" customModule="Rolling" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="12v-oJ-1gY">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="70D-47-Pyz">
+                                <rect key="frame" x="0.0" y="50" width="1024" height="1251"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="70D-47-Pyz" firstAttribute="bottom" secondItem="12v-oJ-1gY" secondAttribute="bottom" constant="-65" id="BRD-YG-FBG"/>
+                            <constraint firstAttribute="trailing" secondItem="70D-47-Pyz" secondAttribute="trailing" id="Jco-pL-TYG"/>
+                            <constraint firstItem="70D-47-Pyz" firstAttribute="leading" secondItem="12v-oJ-1gY" secondAttribute="leading" id="SMk-cD-X4j"/>
+                            <constraint firstItem="70D-47-Pyz" firstAttribute="top" secondItem="12v-oJ-1gY" secondAttribute="top" constant="50" id="yeJ-K4-2fF"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="WMa-j9-qll"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="da6-jG-Z9U"/>
+                    <size key="freeformSize" width="1024" height="1366"/>
+                    <connections>
+                        <outlet property="scrollView" destination="70D-47-Pyz" id="Qga-Zd-Lbv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UhN-b3-NAg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2468.5546875" y="-1005.4172767203513"/>
         </scene>
         <!--Search-->
         <scene sceneID="K7R-7I-hXF">

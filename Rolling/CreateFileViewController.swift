@@ -12,8 +12,16 @@ protocol CreateFileViewControllerDelegate: class {
     func saveToModel(textName: String, imageList: [UIImage])
 }
 
+enum EventState {
+  case addEvent
+  case existingEvent
+}
+
 class CreateFileViewController: UIViewController {
     var imageList = [UIImage]()
+    var model: Model?
+    var eventState: EventState?
+    
     weak var imageDelegate: CreateFileViewControllerDelegate?
     
     @IBOutlet weak var textFieldHeightConstraint: NSLayoutConstraint!
@@ -30,6 +38,7 @@ class CreateFileViewController: UIViewController {
     @objc func tapEdit() {
         UIView.animate(withDuration: 0.3, animations: {
             self.textFieldHeightConstraint.constant = 40
+            self.textField.text = self.title
             self.view.layoutIfNeeded()
         }) { _ in
             self.isShowed(hide: false)
@@ -76,8 +85,9 @@ class CreateFileViewController: UIViewController {
         label.isHidden = hide
         imageCollectionView.cellForItem(at: [0, imageList.count])?.isHidden = hide
         for (index, _) in imageList.enumerated() {
-            let cell = imageCollectionView.cellForItem(at: [0, index]) as! ImageCollectionViewCell
-            cell.button.isHidden = hide
+            if let cell = imageCollectionView.cellForItem(at: [0, index]) as? ImageCollectionViewCell {
+                cell.button.isHidden = hide
+            }
         }
     }
 
@@ -107,6 +117,26 @@ class CreateFileViewController: UIViewController {
         textField.clearButtonMode = .whileEditing
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+        updateUI()
+    }
+    
+    @IBAction func clickButton(_ sender: UIButton) {
+        performSegue(withIdentifier: "ScrollPageViewController", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? ScrollPageViewController {
+            destination.newImageList = self.imageList
+            destination.name = self.model?.name
+        }
+    }
+    
+    private func updateUI() {
+        if model != nil {
+            textFieldHeightConstraint.constant = 0
+            self.title = model?.name
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
+        }
     }
 }
 
@@ -128,11 +158,17 @@ extension CreateFileViewController: UICollectionViewDelegate, UICollectionViewDa
             if (indexPath.item == 0) {
                 cell.frame.origin.x = 5
             }
+            if eventState == EventState.existingEvent && textFieldHeightConstraint.constant == 0 {
+                cell.isHidden = true
+            }
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "imageCell", for: indexPath) as! ImageCollectionViewCell
             cell.imageView.image = imageList[indexPath.row]
             cell.delegate = self
+            if eventState == EventState.existingEvent && textFieldHeightConstraint.constant == 0 {
+                cell.button.isHidden = true
+            }
             return cell
         }
     }
