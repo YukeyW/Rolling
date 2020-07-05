@@ -19,13 +19,11 @@ class ViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         setupNavBar()
-        print(newModel.count)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
-        print(newModel.count)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -129,7 +127,35 @@ extension ViewController: CreateFileViewControllerDelegate {
         for image in imageList {
             newImageList.append(Image(withImage: image))
         }
-        newModel.append(Model(name: textName, image: newImageList, date: convertDateToString()))
+        self.model = Model(name: textName, image: newImageList, date: convertDateToString())
+        newModel.append(self.model!)
         dataLoader.save(model: newModel, imageArray: imageList)
+    }
+    
+    func editModel(textName: String, imageList: [UIImage]) {
+        var num = 0
+        var newImageList = [Image]()
+        for (index, doc) in newModel.enumerated() {
+            if doc == model {
+                num = index
+            }
+        }
+        for image in imageList {
+            newImageList.append(Image(withImage: image))
+        }
+        self.model = Model(name: textName, image: newImageList, date: convertDateToString())
+        newModel[num] = self.model!
+        dataLoader.edit(newModel: newModel, imageArray: imageList, index: num)
+    }
+    
+    func checkName(name: String?) -> Bool {
+        for document in newModel {
+            if document == model {
+                continue
+            } else if document.name == name {
+                return false
+            }
+        }
+        return true
     }
 }

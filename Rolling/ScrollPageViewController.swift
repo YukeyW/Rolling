@@ -16,8 +16,7 @@ class ScrollPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = name
-        var scrollViewHeight = CGFloat(0)
+        var scrollViewHeight = CGFloat(0.0)
         for (_, image) in newImageList.enumerated() {
             let imageView = UIImageView(image: image)
             let scale = image.size.height / image.size.width
@@ -27,6 +26,12 @@ class ScrollPageViewController: UIViewController {
         }
         scrollView.contentSize = CGSize(width: view.frame.size.width, height: scrollViewHeight)
         scrollView.delegate = self
+        self.title = name
+        setupNavBar()
+    }
+    
+    func setupNavBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
 

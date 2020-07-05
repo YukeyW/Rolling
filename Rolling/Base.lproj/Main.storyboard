@@ -287,6 +287,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Create Music Source" id="imH-sZ-Xa2"/>
                     <connections>
+                        <outlet property="button" destination="Ora-Yg-2EM" id="6ZA-9c-pY6"/>
                         <outlet property="imageCollectionView" destination="mlu-xv-A3Q" id="sDd-BZ-R0L"/>
                         <outlet property="label" destination="FyU-k5-Bro" id="dQb-Zv-LRC"/>
                         <outlet property="textField" destination="zqL-Yd-y7T" id="50Y-sO-xza"/>
@@ -303,7 +304,7 @@
             </objects>
             <point key="canvasLocation" x="1709.765625" y="-994.43631039531476"/>
         </scene>
-        <!--Scroll Page View Controller-->
+        <!--Scroll page-->
         <scene sceneID="JDj-Lj-4iD">
             <objects>
                 <viewController storyboardIdentifier="ScrollPageViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WVX-lw-iDm" customClass="ScrollPageViewController" customModule="Rolling" customModuleProvider="target" sceneMemberID="viewController">
@@ -317,14 +318,14 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="70D-47-Pyz" firstAttribute="bottom" secondItem="12v-oJ-1gY" secondAttribute="bottom" constant="-65" id="BRD-YG-FBG"/>
                             <constraint firstAttribute="trailing" secondItem="70D-47-Pyz" secondAttribute="trailing" id="Jco-pL-TYG"/>
+                            <constraint firstItem="70D-47-Pyz" firstAttribute="top" secondItem="WMa-j9-qll" secondAttribute="top" id="PM5-7c-TK3"/>
                             <constraint firstItem="70D-47-Pyz" firstAttribute="leading" secondItem="12v-oJ-1gY" secondAttribute="leading" id="SMk-cD-X4j"/>
-                            <constraint firstItem="70D-47-Pyz" firstAttribute="top" secondItem="12v-oJ-1gY" secondAttribute="top" constant="50" id="yeJ-K4-2fF"/>
+                            <constraint firstItem="70D-47-Pyz" firstAttribute="bottom" secondItem="WMa-j9-qll" secondAttribute="bottom" id="bly-F2-bs6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="WMa-j9-qll"/>
                     </view>
-                    <navigationItem key="navigationItem" id="da6-jG-Z9U"/>
+                    <navigationItem key="navigationItem" title="Scroll page" id="da6-jG-Z9U"/>
                     <size key="freeformSize" width="1024" height="1366"/>
                     <connections>
                         <outlet property="scrollView" destination="70D-47-Pyz" id="Qga-Zd-Lbv"/>

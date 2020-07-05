@@ -59,6 +59,7 @@ class DataLoader {
     }
 
     func save(model: [Model], imageArray: [UIImage]) {
+        self.model = model
         guard let libraryDirectoryUrl = manager.urls(for: .libraryDirectory, in: .userDomainMask).first else { return }
         let folder = libraryDirectoryUrl.appendingPathComponent("/RollingApp", isDirectory: true)
         let exist = manager.fileExists(atPath: folder.path)
@@ -89,5 +90,37 @@ class DataLoader {
                 try? imageData?.write(to: newPath!)
             }
         }
+    }
+    
+    func edit(newModel: [Model], imageArray: [UIImage], index: Int) {
+        if newModel[index] != model[index] {
+            guard let libraryDirectoryUrl = manager.urls(for: .libraryDirectory, in: .userDomainMask).first else { return }
+            let filePath = libraryDirectoryUrl.path + "/RollingApp" + "/" + "\(model[index].name)"
+            print(filePath)
+            if manager.fileExists(atPath: filePath) {
+                try! manager.removeItem(atPath: filePath)
+            }
+            let fileUrl = URL.init(string: "file://" + libraryDirectoryUrl.path + "/RollingApp/music.json" )!
+            do {
+                let jsonData = try JSONEncoder().encode(newModel)
+                try jsonData.write(to: fileUrl, options: [])
+            } catch {
+                print(error)
+            }
+        
+            let path = libraryDirectoryUrl.appendingPathComponent("/RollingApp", isDirectory: true).path + "/" + "\(newModel[index].name)"
+            do{
+                try manager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print(error)
+            }
+
+            for (index, image) in imageArray.enumerated() {
+                let imageData = image.pngData()
+                let newPath = URL.init(string: "file://" + path)?.appendingPathComponent("picture" + "\(index)" + ".png")
+                try? imageData?.write(to: newPath!)
+            }
+        }
+        self.model = newModel
     }
 }

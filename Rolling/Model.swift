@@ -38,5 +38,16 @@ struct Image: Codable{
     }
 }
 
+extension Image: Equatable {
+    static func == (lhs: Image, rhs: Image) -> Bool {
+        return(lhs.imageData == rhs.imageData)
+    }
+}
+
+extension Model: Equatable {
+    static func == (lhs: Model, rhs: Model) -> Bool {
+        return(lhs.name == rhs.name && lhs.image == rhs.image && lhs.date == rhs.date)
+    }
+}
 
 

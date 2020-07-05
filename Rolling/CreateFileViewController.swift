@@ -10,6 +10,8 @@ import UIKit
 
 protocol CreateFileViewControllerDelegate: class {
     func saveToModel(textName: String, imageList: [UIImage])
+    func editModel(textName: String, imageList: [UIImage])
+    func checkName(name: String?) -> Bool
 }
 
 enum EventState {
@@ -24,6 +26,7 @@ class CreateFileViewController: UIViewController {
     
     weak var imageDelegate: CreateFileViewControllerDelegate?
     
+    @IBOutlet weak var button: UIButton!
     @IBOutlet weak var textFieldHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var label: UILabel!
@@ -47,21 +50,39 @@ class CreateFileViewController: UIViewController {
     }
     
     @objc func tapSave() {
-        self.title = textField.text
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            self.textFieldHeightConstraint.constant = 0
-            self.view.layoutIfNeeded()
-        }) { _ in
-            self.isShowed(hide: true)
-            self.textField.resignFirstResponder()
-        }
+        if checkDocument() {
+            self.title = textField.text
+            
+            UIView.animate(withDuration: 0.3, animations: {
+                self.textFieldHeightConstraint.constant = 0
+                self.view.layoutIfNeeded()
+            }) { _ in
+                self.isShowed(hide: true)
+                self.textField.resignFirstResponder()
+            }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
-        imageDelegate?.saveToModel(textName: textField.text!, imageList: imageList)
-        //TODO:  check name validate
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
+            if eventState == EventState.existingEvent {
+                imageDelegate?.editModel(textName: textField.text!, imageList: imageList)
+            } else {
+                imageDelegate?.saveToModel(textName: textField.text!, imageList: imageList)
+                eventState = EventState.existingEvent
+            }
+        }
     }
     
+    func checkDocument() -> Bool {
+        if textField.text == "" {
+            addAlert(content: "You should input document name")
+            return false
+        } else if !(imageDelegate?.checkName(name: textField.text))!{
+            addAlert(content: "Name has already existed")
+            return false
+        } else {
+            return true
+        }
+    }
+
     @IBAction func tapAction(_ sender: Any) {
         let imagePickerController = UIImagePickerController()
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -83,6 +104,7 @@ class CreateFileViewController: UIViewController {
     
     func isShowed(hide: Bool) {
         label.isHidden = hide
+        button.isHidden = !hide
         imageCollectionView.cellForItem(at: [0, imageList.count])?.isHidden = hide
         for (index, _) in imageList.enumerated() {
             if let cell = imageCollectionView.cellForItem(at: [0, index]) as? ImageCollectionViewCell {
@@ -95,10 +117,14 @@ class CreateFileViewController: UIViewController {
         if(UIImagePickerController.isSourceTypeAvailable(sourceType)) {
             presentImagePicker(controller: imagePicker, source: sourceType)
         } else {
-            let alert  = UIAlertController(title: "Warning", message: "You don't have camera", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            addAlert(content: "You don't have camera")
         }
+    }
+    
+    func addAlert(content: String) {
+        let alert  = UIAlertController(title: "Warning", message: content, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     internal func presentImagePicker(controller: UIImagePickerController, source: UIImagePickerController.SourceType) {
@@ -127,7 +153,7 @@ class CreateFileViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? ScrollPageViewController {
             destination.newImageList = self.imageList
-            destination.name = self.model?.name
+            destination.name = self.title
         }
     }
     
@@ -136,6 +162,8 @@ class CreateFileViewController: UIViewController {
             textFieldHeightConstraint.constant = 0
             self.title = model?.name
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tapEdit))
+        } else {
+            button.isHidden = true
         }
     }
 }
