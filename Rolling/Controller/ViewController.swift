@@ -33,13 +33,11 @@ class ViewController: UIViewController {
                 destination.model = self.model
                 destination.imageList = convertImage()
                 destination.eventState = EventState.existingEvent
-            } else {
-                destination.eventState = EventState.addEvent
             }
         }
     }
     
-    func convertDateToString() -> String {
+    private func convertDateToString() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let myString = formatter.string(from: Date())
@@ -53,28 +51,41 @@ class ViewController: UIViewController {
         if longPressGR.state != .ended {
             return
         }
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let point = longPressGR.location(in: self.collectionView)
         let indexPath = self.collectionView.indexPathForItem(at: point)
-        
         if let indexPath = indexPath {
-            let cell = self.collectionView.cellForItem(at: indexPath)
-            actionSheet.addAction(UIAlertAction(title: "delete", style: .default, handler: { _ in
-                self.deleteDocument(indexPath: indexPath)}))
-            actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            actionSheet.popoverPresentationController?.sourceView = cell;
-            actionSheet.popoverPresentationController?.sourceRect = CGRect(x: cell?.bounds.midX ?? 0, y: cell?.bounds.midY ?? 0, width: 0, height: 0)
-            self.present(actionSheet, animated: true, completion: nil)
+            alertFunc(indexPath: indexPath)
         }
     }
+    
+    private func alertFunc(indexPath: IndexPath) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let cell = self.collectionView.cellForItem(at: indexPath)
+        actionSheet.addAction(UIAlertAction(title: "delete", style: .default, handler: { _ in
+            self.deleteDocument(indexPath: indexPath)}))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        actionSheet.popoverPresentationController?.sourceView = cell;
+        actionSheet.popoverPresentationController?.sourceRect = CGRect(x: cell?.bounds.midX ?? 0, y: cell?.bounds.midY ?? 0, width: 0, height: 0)
+        self.present(actionSheet, animated: true, completion: nil)
+    }
 
-    func deleteDocument(indexPath: IndexPath) {
-        dataLoader.removeFile(newModel: newModel, index: (indexPath.row - 1), name: newModel[indexPath.row - 1].name)
-        newModel.remove(at: indexPath.row - 1)
+    private func deleteDocument(indexPath: IndexPath) {
+        let newIndex = indexPath.row - 1
+        dataLoader.removeFile(newModel: newModel, index: newIndex, name: newModel[newIndex].name)
+        newModel.remove(at: newIndex)
         collectionView.deleteItems(at: [indexPath])
     }
     
-    func convertImage() -> [UIImage] {
+    private func convertUImage(name: String, imageArray: [UIImage]) -> Model? {
+        var newImageList = [Image]()
+        for image in imageArray {
+            newImageList.append(Image(withImage: image))
+        }
+        self.model = Model(name: name, image: newImageList, date: convertDateToString())
+        return self.model
+    }
+    
+    private func convertImage() -> [UIImage] {
         var image = [UIImage]()
         if let imageDataList = model?.image {
             for imageData in imageDataList {
@@ -84,7 +95,7 @@ class ViewController: UIViewController {
         return image
     }
     
-    func setupNavBar() {
+    private func setupNavBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
@@ -123,28 +134,19 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
 extension ViewController: CreateFileViewControllerDelegate {
     func saveToModel(textName: String, imageList: [UIImage]) {
-        var newImageList = [Image]()
-        for image in imageList {
-            newImageList.append(Image(withImage: image))
-        }
-        self.model = Model(name: textName, image: newImageList, date: convertDateToString())
-        newModel.append(self.model!)
-        dataLoader.save(model: newModel, imageArray: imageList)
+        let modelOne = convertUImage(name: textName, imageArray: imageList)!
+        newModel.append(modelOne)
+        dataLoader.save(model: newModel, imageArray: imageList, name: textName)
     }
     
     func editModel(textName: String, imageList: [UIImage]) {
         var num = 0
-        var newImageList = [Image]()
         for (index, doc) in newModel.enumerated() {
             if doc == model {
                 num = index
             }
         }
-        for image in imageList {
-            newImageList.append(Image(withImage: image))
-        }
-        self.model = Model(name: textName, image: newImageList, date: convertDateToString())
-        newModel[num] = self.model!
+        newModel[num] = convertUImage(name: textName, imageArray: imageList)!
         dataLoader.edit(newModel: newModel, imageArray: imageList, index: num)
     }
     

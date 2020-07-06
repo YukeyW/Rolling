@@ -9,7 +9,6 @@
 import UIKit
 
 class DocumentCollectionViewCell: UICollectionViewCell {
-    
     @IBOutlet weak var documentName: UILabel!
     @IBOutlet weak var date: UILabel!
 }

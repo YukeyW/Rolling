@@ -68,21 +68,45 @@
 		5FBF20772495C85200404322 /* Rolling */ = {
 			isa = PBXGroup;
 			children = (
-				5FCC636F24A20CCB00FD4CD5 /* Model.swift */,
-				5FBF207E2495C85200404322 /* Main.storyboard */,
-				5FCC63B824AEE8D400FD4CD5 /* ScrollPageViewController.swift */,
+				5FCC63C024B3592C00FD4CD5 /* Model */,
+				5FCC63C124B3595500FD4CD5 /* Controller */,
 				5FBF20812495C85A00404322 /* Assets.xcassets */,
 				5FBF20832495C85A00404322 /* LaunchScreen.storyboard */,
 				5FBF20782495C85200404322 /* AppDelegate.swift */,
 				5FBF207A2495C85200404322 /* SceneDelegate.swift */,
-				5FBF20962496468500404322 /* CreateFileViewController.swift */,
+				5FBF207E2495C85200404322 /* Main.storyboard */,
 				5FBF20862495C85A00404322 /* Info.plist */,
-				5FBF207C2495C85200404322 /* ViewController.swift */,
-				5FCC63B324A899AA00FD4CD5 /* DocumentCollectionViewCell.swift */,
-				5FCC636B249CEB7100FD4CD5 /* ImageCollectionViewCell.swift */,
-				5FCC637124A3006D00FD4CD5 /* DataLoader.swift */,
+				5FCC63C224B3598F00FD4CD5 /* View */,
 			);
 			path = Rolling;
+			sourceTree = "<group>";
+		};
+		5FCC63C024B3592C00FD4CD5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5FCC636F24A20CCB00FD4CD5 /* Model.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5FCC63C124B3595500FD4CD5 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5FCC63B824AEE8D400FD4CD5 /* ScrollPageViewController.swift */,
+				5FBF20962496468500404322 /* CreateFileViewController.swift */,
+				5FBF207C2495C85200404322 /* ViewController.swift */,
+				5FCC637124A3006D00FD4CD5 /* DataLoader.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		5FCC63C224B3598F00FD4CD5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5FCC63B324A899AA00FD4CD5 /* DocumentCollectionViewCell.swift */,
+				5FCC636B249CEB7100FD4CD5 /* ImageCollectionViewCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

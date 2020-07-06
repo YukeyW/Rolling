@@ -22,8 +22,7 @@ enum EventState {
 class CreateFileViewController: UIViewController {
     var imageList = [UIImage]()
     var model: Model?
-    var eventState: EventState?
-    
+    var eventState = EventState.addEvent
     weak var imageDelegate: CreateFileViewControllerDelegate?
     
     @IBOutlet weak var button: UIButton!
@@ -38,6 +37,25 @@ class CreateFileViewController: UIViewController {
         }
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        imageCollectionView.delegate = self
+        imageCollectionView.dataSource = self
+        textField.delegate = self
+        textField.clearButtonMode = .always
+        textField.clearButtonMode = .whileEditing
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        updateUI()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? ScrollPageViewController {
+            destination.newImageList = self.imageList
+            destination.name = self.title
+        }
+    }
+    
     @objc func tapEdit() {
         UIView.animate(withDuration: 0.3, animations: {
             self.textFieldHeightConstraint.constant = 40
@@ -46,6 +64,7 @@ class CreateFileViewController: UIViewController {
         }) { _ in
             self.isShowed(hide: false)
         }
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(tapSave))
     }
     
@@ -71,16 +90,12 @@ class CreateFileViewController: UIViewController {
         }
     }
     
-    func checkDocument() -> Bool {
-        if textField.text == "" {
-            addAlert(content: "You should input document name")
-            return false
-        } else if !(imageDelegate?.checkName(name: textField.text))!{
-            addAlert(content: "Name has already existed")
-            return false
-        } else {
-            return true
-        }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @IBAction func clickButton(_ sender: UIButton) {
+        performSegue(withIdentifier: "ScrollPageViewController", sender: self)
     }
 
     @IBAction func tapAction(_ sender: Any) {
@@ -98,11 +113,19 @@ class CreateFileViewController: UIViewController {
         self.present(actionSheet, animated: true, completion: nil)
     }
     
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
+    private func checkDocument() -> Bool {
+        if textField.text == "" {
+            addAlert(content: "You should input document name")
+            return false
+        } else if !(imageDelegate?.checkName(name: textField.text))!{
+            addAlert(content: "Name has already existed")
+            return false
+        } else {
+            return true
+        }
     }
     
-    func isShowed(hide: Bool) {
+    private func isShowed(hide: Bool) {
         label.isHidden = hide
         button.isHidden = !hide
         imageCollectionView.cellForItem(at: [0, imageList.count])?.isHidden = hide
@@ -113,7 +136,7 @@ class CreateFileViewController: UIViewController {
         }
     }
 
-    func openCamera(imagePicker: UIImagePickerController, sourceType: UIImagePickerController.SourceType) {
+    private func openCamera(imagePicker: UIImagePickerController, sourceType: UIImagePickerController.SourceType) {
         if(UIImagePickerController.isSourceTypeAvailable(sourceType)) {
             presentImagePicker(controller: imagePicker, source: sourceType)
         } else {
@@ -132,29 +155,6 @@ class CreateFileViewController: UIViewController {
         controller.sourceType = source
         controller.allowsEditing = true
         self.present(controller, animated: true, completion: nil)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        imageCollectionView.delegate = self
-        imageCollectionView.dataSource = self
-        textField.delegate = self
-        textField.clearButtonMode = .always
-        textField.clearButtonMode = .whileEditing
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tap)
-        updateUI()
-    }
-    
-    @IBAction func clickButton(_ sender: UIButton) {
-        performSegue(withIdentifier: "ScrollPageViewController", sender: self)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segue.destination as? ScrollPageViewController {
-            destination.newImageList = self.imageList
-            destination.name = self.title
-        }
     }
     
     private func updateUI() {
