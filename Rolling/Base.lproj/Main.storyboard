@@ -325,9 +325,16 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="WMa-j9-qll"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Scroll page" id="da6-jG-Z9U"/>
+                    <navigationItem key="navigationItem" title="Scroll page" id="da6-jG-Z9U">
+                        <barButtonItem key="rightBarButtonItem" title="Play" id="HQq-WF-rev">
+                            <connections>
+                                <action selector="playButton:" destination="WVX-lw-iDm" id="6HD-6y-mfc"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <size key="freeformSize" width="1024" height="1366"/>
                     <connections>
+                        <outlet property="play" destination="HQq-WF-rev" id="YD2-Id-SaO"/>
                         <outlet property="scrollView" destination="70D-47-Pyz" id="Qga-Zd-Lbv"/>
                     </connections>
                 </viewController>
