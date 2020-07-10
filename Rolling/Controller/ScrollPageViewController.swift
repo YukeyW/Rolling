@@ -13,8 +13,7 @@ class ScrollPageViewController: UIViewController {
     var name: String?
     var timer = Timer()
     var scrollViewHeight = CGFloat(0.0)
-    lazy var height = scrollView.bounds.size.height
-    var count = 1
+    var count = 0
 
     @IBOutlet weak var play: UIBarButtonItem!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -24,6 +23,12 @@ class ScrollPageViewController: UIViewController {
         adjustImage()
         self.title = name
         isShowed()
+        scrollView.delegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeTimer()
     }
     
     private func adjustImage() {
@@ -45,20 +50,37 @@ class ScrollPageViewController: UIViewController {
     
     @IBAction func playButton(_ sender: UIBarButtonItem) {
         DispatchQueue.main.async {
-            self.timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(self.scrollDocument), userInfo: nil, repeats: true)
+            self.timer = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(self.scrollDocument), userInfo: nil, repeats: true)
         }
     }
     
     @objc func scrollDocument() {
         if count < Int(scrollViewHeight / scrollView.bounds.size.height) {
             let scroll = CGPoint(x: 0, y: scrollView.bounds.size.height * CGFloat(count))
-            scrollView.setContentOffset(scroll, animated: false)
+            UIView.animate(withDuration: 3) {
+                self.scrollView.setContentOffset(scroll, animated: false)
+            }
             count += 1
         } else {
-            let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height)
-            scrollView.setContentOffset(bottomOffset, animated: false)
+            let y = scrollViewHeight - scrollView.bounds.size.height * CGFloat(count) + scrollView.bounds.size.height * CGFloat(count - 1)
+            let bottomOffset = CGPoint(x: 0, y: y)
+            UIView.animate(withDuration: 3) {
+                self.scrollView.setContentOffset(bottomOffset, animated: false)
+            }
             count = 0
         }
     }
+    
+    func removeTimer() {
+        timer.invalidate()
+    }
 }
+
+extension ScrollPageViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        removeTimer()
+    }
+}
+
+
 
